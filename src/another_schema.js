@@ -97,14 +97,15 @@ const RootQuery = new GraphQLObjectType({
     users: {
       type: new GraphQLList(UserType), 
       async resolve() {
-        return [
-          {
-            userId: 1,
-            name: 'someone new1',
-            email: 'someone.new1@test.com',
-            posts: null,
-          }
-        ]
+        // return [
+        //   {
+        //     userId: 1,
+        //     name: 'someone new1',
+        //     email: 'someone.new1@test.com',
+        //     posts: null,
+        //   }
+        // ]
+        
       }
     },
     posts: {
