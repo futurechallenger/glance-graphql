@@ -20,8 +20,8 @@ async function createUser({ name, email }) {
 
 async function findUserById(userId) {
   try {
-    const users = await prisma.user.findMany({
-      where: { id: { equals: userId } },
+    const users = await prisma.user.findUnique({
+      where: { id: userId },
     });
     return users;
   } catch (e) {
@@ -75,8 +75,8 @@ async function createPost({ authorId, title, content }) {
 
 async function findPostById(postId) {
   try {
-    const users = await prisma.post.findMany({
-      where: { id: { equals: postId } },
+    const users = await prisma.post.findUnique({
+      where: { id: postId },
     });
     prisma.$disconnect();
     return users;

@@ -72,7 +72,7 @@ const RootQuery = new GraphQLObjectType({
     user: {
       type: UserType,
       args: {
-        userId: { type: GraphQLID },
+        userId: { type: new GraphQLNonNull(GraphQLInt)},
       },
       async resolve(parent, args) {
         return findUserById(args.userId);
