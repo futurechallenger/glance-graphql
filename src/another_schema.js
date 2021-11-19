@@ -4,7 +4,20 @@ import {
   GraphQLID,
   GraphQLList,
   GraphQLSchema,
+  GraphQLNonNull,
+  GraphQLInt,
 } from 'graphql';
+import {
+  createPost,
+  createUser,
+  findAllEnvs,
+  findAllPosts,
+  findEnvById,
+  findPostById,
+  findUserById,
+  findUserByName,
+  signin,
+} from './db.js';
 
 const UserType = new GraphQLObjectType({
   name: 'UserType',
@@ -20,19 +33,9 @@ const PostType = new GraphQLObjectType({
   name: 'PostType',
   fields: () => ({
     postId: { type: GraphQLID },
+    title: { type: GraphQLString },
     content: { type: GraphQLString },
-    postedBy: {
-      type: UserType,
-      resolve: async function () {
-        return [];
-      },
-    },
-    commentedBy: {
-      type: new GraphQLList(UserType),
-      resolve: function () {
-        return [];
-      },
-    },
+    author: { type: UserType },
   }),
 });
 
@@ -69,75 +72,49 @@ const RootQuery = new GraphQLObjectType({
     user: {
       type: UserType,
       args: {
-        userId: { type: GraphQLID },
+        userId: { type: new GraphQLNonNull(GraphQLInt) },
       },
-      resolve(parent, args) {
-        console.log('>args', { parent, args });
-        return {
-          userId: 1,
-          name: 'someone new1',
-          email: 'someone.new1@test.com',
-          posts: null,
-        };
+      async resolve(parent, args) {
+        return findUserById(args.userId);
       },
-    },
-    post: {
-      type: PostType,
-      args: {
-        postId: { type: GraphQLID },
+      post: {
+        type: PostType,
+        args: {
+          postId: { type: GraphQLID },
+        },
+        async resolve(parent, args) {
+          return findPostById(args.postId);
+        },
       },
-      resolve(parent, args) {
-        return {
-          postId: 1,
-          userId: 1,
-          name: 'someone new1',
-          email: 'someone.new1@test.com',
-          posts: null,
-        };
+      users: {
+        type: new GraphQLList(UserType),
+        args: {
+          name: { type: GraphQLString },
+        },
+        async resolve(parent, args) {
+          return findUserByName(args.name ?? '');
+        },
       },
-    },
-    users: {
-      type: new GraphQLList(UserType),
-      async resolve() {
-        return [
-          {
-            userId: 1,
-            name: 'someone new1',
-            email: 'someone.new1@test.com',
-            posts: null,
-          },
-        ];
+      posts: {
+        type: new GraphQLList(PostType),
+        async resolve() {
+          return findAllPosts();
+        },
       },
-    },
-    posts: {
-      type: new GraphQLList(PostType),
-      resolve() {
-        return [
-          {
-            userId: 1,
-            name: 'someone new1',
-            email: 'someone.new1@test.com',
-            posts: null,
-          },
-        ];
+      env: {
+        type: EnvironmentType,
+        args: {
+          name: { type: GraphQLString },
+        },
+        async resolve(parent, args) {
+          return findEnvById(args.name);
+        },
       },
-    },
-    env: {
-      type: EnvironmentType,
-      args: {
-        name: { type: GraphQLString },
-      },
-      resolve(parent, args) {
-        return {
-          name: 'env1',
-          url: 'https://the-path-of-env',
-        };
-      },
-    },
-    envs: {
-      type: new GraphQLList(EnvironmentType),
-      resolve() {
-        return [];
+      envs: {
+        type: new GraphQLList(EnvironmentType),
+        async resolve() {
+          return findAllEnvs();
+        },
       },
     },
   }),
@@ -145,9 +122,54 @@ const RootQuery = new GraphQLObjectType({
 
 const Mutation = new GraphQLObjectType({
   name: 'MutationType',
-  fields: () => ({}),
+  fields: () => ({
+    createUser: {
+      type: UserType,
+      args: {
+        name: { type: new GraphQLNonNull(GraphQLString) },
+        email: { type: new GraphQLNonNull(GraphQLString) },
+      },
+      async resolve(parent, args) {
+        const newUser = await createUser({
+          name: args.name,
+          email: args.email,
+        });
+        return newUser;
+      },
+    },
+    createPost: {
+      type: PostType,
+      args: {
+        title: { type: new GraphQLNonNull(GraphQLString) },
+        content: { type: new GraphQLNonNull(GraphQLString) },
+        authorId: { type: new GraphQLNonNull(GraphQLInt) },
+      },
+      async resolve(parent, args) {
+        const newPost = await createPost({
+          authorId: args.authorId,
+          title: args.title,
+          content: args.content,
+        });
+
+        return newPost;
+      },
+    },
+    signin: {
+      type: UserType,
+      args: {
+        name: { type: new GraphQLNonNull(GraphQLString) },
+        password: { type: new GraphQLNonNull(GraphQLString) },
+      },
+      async resolve(parent, args) {
+        const {name, password} = args;
+        const newUser = await signin(name, password);
+        return newUser;
+      }
+    },
+  }),
 });
 
 export const schema = new GraphQLSchema({
   query: RootQuery,
+  mutation: Mutation,
 });
