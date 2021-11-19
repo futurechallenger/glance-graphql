@@ -16,7 +16,7 @@ import {
   findPostById,
   findUserById,
   findUserByName,
-  signin,
+  signIn,
 } from './db.js';
 
 const UserType = new GraphQLObjectType({
@@ -154,7 +154,7 @@ const Mutation = new GraphQLObjectType({
         return newPost;
       },
     },
-    signin: {
+    signIn: {
       type: UserType,
       args: {
         name: { type: new GraphQLNonNull(GraphQLString) },
@@ -162,7 +162,7 @@ const Mutation = new GraphQLObjectType({
       },
       async resolve(parent, args) {
         const {name, password} = args;
-        const newUser = await signin(name, password);
+        const newUser = await signIn(name, password);
         return newUser;
       }
     },
