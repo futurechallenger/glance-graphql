@@ -1,59 +1,62 @@
 import {
-  GraphQLString, 
+  GraphQLString,
   GraphQLObjectType,
-  GraphQLID, 
-  GraphQLList, 
+  GraphQLID,
+  GraphQLList,
   GraphQLSchema,
 } from 'graphql';
 
 const UserType = new GraphQLObjectType({
   name: 'UserType',
   fields: () => ({
-    userId: {type: GraphQLID},
-    name: {type: GraphQLString},
-    email: {type: GraphQLString},
-    posts: {type: new GraphQLList(PostType)}
+    userId: { type: GraphQLID },
+    name: { type: GraphQLString },
+    email: { type: GraphQLString },
+    posts: { type: new GraphQLList(PostType) },
   }),
 });
 
 const PostType = new GraphQLObjectType({
   name: 'PostType',
-  fields: () =>({
-    postId: {type: GraphQLID,},
-    content: {type: GraphQLString,},
+  fields: () => ({
+    postId: { type: GraphQLID },
+    content: { type: GraphQLString },
     postedBy: {
-      type: UserType, 
+      type: UserType,
       resolve: async function () {
         return [];
-      }
+      },
     },
     commentedBy: {
-      type: new GraphQLList(UserType), 
-      resolve: function() {
+      type: new GraphQLList(UserType),
+      resolve: function () {
         return [];
-      }
-    }
-  })
+      },
+    },
+  }),
 });
 
 const EnvironmentType = new GraphQLObjectType({
   name: 'EnvironmentType',
   fields: () => ({
-    envId: {type: GraphQLID},
-    name: {type: GraphQLString},
-    url: {type: GraphQLString},
-  })
+    envId: { type: GraphQLID },
+    name: { type: GraphQLString },
+    url: { type: GraphQLString },
+  }),
 });
 
 const AuthType = new GraphQLObjectType({
   name: 'AuthType',
   fields: () => ({
-    token: {type: GraphQLString},
-    user: {type: UserType, resolve(){
-      console.log('>params', arguments);
-      return [];
-    }},
-  })
+    token: { type: GraphQLString },
+    user: {
+      type: UserType,
+      resolve() {
+        console.log('>params', arguments);
+        return [];
+      },
+    },
+  }),
 });
 
 /**
@@ -64,24 +67,24 @@ const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: () => ({
     user: {
-      type: UserType, 
+      type: UserType,
       args: {
-        userId: {type: GraphQLID},
+        userId: { type: GraphQLID },
       },
       resolve(parent, args) {
-        console.log('>args', {parent, args}); 
+        console.log('>args', { parent, args });
         return {
           userId: 1,
           name: 'someone new1',
           email: 'someone.new1@test.com',
           posts: null,
-        }
-      }
+        };
+      },
     },
     post: {
-      type: PostType, 
+      type: PostType,
       args: {
-        postId: {type: GraphQLID},
+        postId: { type: GraphQLID },
       },
       resolve(parent, args) {
         return {
@@ -91,11 +94,10 @@ const RootQuery = new GraphQLObjectType({
           email: 'someone.new1@test.com',
           posts: null,
         };
-      }
-
+      },
     },
     users: {
-      type: new GraphQLList(UserType), 
+      type: new GraphQLList(UserType),
       async resolve() {
         return [
           {
@@ -103,12 +105,12 @@ const RootQuery = new GraphQLObjectType({
             name: 'someone new1',
             email: 'someone.new1@test.com',
             posts: null,
-          }
-        ]
-      }
+          },
+        ];
+      },
     },
     posts: {
-      type: new GraphQLList(PostType), 
+      type: new GraphQLList(PostType),
       resolve() {
         return [
           {
@@ -116,31 +118,34 @@ const RootQuery = new GraphQLObjectType({
             name: 'someone new1',
             email: 'someone.new1@test.com',
             posts: null,
-          }
+          },
         ];
-      }
+      },
     },
     env: {
       type: EnvironmentType,
       args: {
-        name: {type: GraphQLString},
+        name: { type: GraphQLString },
       },
       resolve(parent, args) {
         return {
           name: 'env1',
           url: 'https://the-path-of-env',
         };
-      }
+      },
     },
-    envs: {type: new GraphQLList(EnvironmentType), resolve() {return []}},
+    envs: {
+      type: new GraphQLList(EnvironmentType),
+      resolve() {
+        return [];
+      },
+    },
   }),
 });
 
 const Mutation = new GraphQLObjectType({
   name: 'MutationType',
-  fields: () => ({
-
-  })
+  fields: () => ({}),
 });
 
 export const schema = new GraphQLSchema({
