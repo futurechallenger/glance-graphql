@@ -117,6 +117,14 @@ async function findAllEnvs() {
   }
 }
 
+/**
+ * Fake authentication 
+ * @returns A fake token
+ */
+function signin(name, password) {
+  return Promise.resolve('an-auth-token');
+}
+
 export {
   createUser,
   createPost,
@@ -126,4 +134,5 @@ export {
   findAllPosts,
   findEnvById,
   findAllEnvs,
+  signin,
 };

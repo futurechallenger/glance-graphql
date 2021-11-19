@@ -4,7 +4,6 @@ import {
   GraphQLID,
   GraphQLList,
   GraphQLSchema,
-  graphqlSync,
   GraphQLNonNull,
   GraphQLInt,
 } from 'graphql';
@@ -17,6 +16,7 @@ import {
   findPostById,
   findUserById,
   findUserByName,
+  signin,
 } from './db.js';
 
 const UserType = new GraphQLObjectType({
@@ -35,7 +35,7 @@ const PostType = new GraphQLObjectType({
     postId: { type: GraphQLID },
     title: { type: GraphQLString },
     content: { type: GraphQLString },
-    author: {  type: UserType,},
+    author: { type: UserType },
   }),
 });
 
@@ -72,7 +72,7 @@ const RootQuery = new GraphQLObjectType({
     user: {
       type: UserType,
       args: {
-        userId: { type: new GraphQLNonNull(GraphQLInt)},
+        userId: { type: new GraphQLNonNull(GraphQLInt) },
       },
       async resolve(parent, args) {
         return findUserById(args.userId);
@@ -153,6 +153,18 @@ const Mutation = new GraphQLObjectType({
 
         return newPost;
       },
+    },
+    signin: {
+      type: UserType,
+      args: {
+        name: { type: new GraphQLNonNull(GraphQLString) },
+        password: { type: new GraphQLNonNull(GraphQLString) },
+      },
+      async resolve(parent, args) {
+        const {name, password} = args;
+        const newUser = await signin(name, password);
+        return newUser;
+      }
     },
   }),
 });
