@@ -122,7 +122,7 @@ async function findAllEnvs() {
  * @returns A fake token
  */
 function signIn(name, password) {
-  return Promise.resolve('an-auth-token');
+  return Promise.resolve({ token: 'an-auth-token' });
 }
 
 export {

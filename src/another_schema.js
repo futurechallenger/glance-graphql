@@ -55,7 +55,7 @@ const AuthType = new GraphQLObjectType({
     user: {
       type: UserType,
       resolve() {
-        console.log('>params', arguments);
+        // console.log('>params', arguments);
         return [];
       },
     },
@@ -155,16 +155,27 @@ const Mutation = new GraphQLObjectType({
       },
     },
     signIn: {
-      type: UserType,
+      type: AuthType,
       args: {
         name: { type: new GraphQLNonNull(GraphQLString) },
         password: { type: new GraphQLNonNull(GraphQLString) },
       },
-      async resolve(parent, args) {
-        const {name, password} = args;
+      async resolve(parent, args, context, info) {
+        console.log('>', { parent, args, context, info });
+        let token = '';
+        if (context) {
+          token = await context();
+        }
+
+        console.log('>token: ', token);
+        if (!token) {
+          throw new Error('Not authenticated!');
+        }
+
+        const { name, password } = args;
         const newUser = await signIn(name, password);
         return newUser;
-      }
+      },
     },
   }),
 });
