@@ -6,6 +6,8 @@ import {
   GraphQLSchema,
   GraphQLNonNull,
   GraphQLInt,
+  GraphQLEnumType,
+  GraphQLFloat,
 } from 'graphql';
 import {
   createPost,
@@ -26,6 +28,15 @@ const UserType = new GraphQLObjectType({
     name: { type: GraphQLString },
     email: { type: GraphQLString },
     posts: { type: new GraphQLList(PostType) },
+  }),
+});
+
+const StarShipType = new GraphQLObjectType({
+  name: 'StarShipType',
+  fields: () => ({
+    userId: { type: GraphQLID },
+    name: { type: GraphQLString },
+    length: { type: GraphQLFloat },
   }),
 });
 
