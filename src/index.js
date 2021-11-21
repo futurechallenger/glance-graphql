@@ -3,7 +3,11 @@ import { graphqlHTTP } from 'express-graphql';
 // import { schema } from './schema.js';
 import { schema } from './another_schema.js';
 import cors from 'cors';
+<<<<<<< HEAD
 import * as resolvers from './resolvers.js';
+=======
+// import * as resolvers from './resolvers.js';
+>>>>>>> 573dcee (fix bugs)
 
 const PORT = 9090;
 

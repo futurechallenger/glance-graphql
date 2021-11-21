@@ -15,6 +15,7 @@ async function createUser({ name, email }) {
   } catch (e) {
   } finally {
     prisma.$disconnect();
+<<<<<<< HEAD
   }
 }
 
@@ -33,6 +34,26 @@ async function findUserById(userId) {
 
 async function findUserByName(name) {
   try {
+=======
+  }
+}
+
+async function findUserById(userId) {
+  try {
+    const users = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+    return users;
+  } catch (e) {
+    console.error('ERROR: ', e);
+  } finally {
+    prisma.$disconnect();
+  }
+}
+
+async function findUserByName(name) {
+  try {
+>>>>>>> 573dcee (fix bugs)
     const condition = name
       ? {
           where: {
@@ -48,6 +69,26 @@ async function findUserByName(name) {
   }
 }
 
+<<<<<<< HEAD
+=======
+async function createEnv({ name, url }) {
+  try {
+    const env = await prisma.environment.create({
+      data: {
+        name,
+        url,
+      },
+    });
+    return env;
+  } catch (e) {
+    console.error('ERROR: ', e);
+    throw e;
+  } finally {
+    prisma.$disconnect();
+  }
+}
+
+>>>>>>> 573dcee (fix bugs)
 async function createPost({ authorId, title, content }) {
   try {
     const post = await prisma.post.create({
@@ -88,9 +129,17 @@ async function findPostById(postId) {
 async function findAllPosts() {
   try {
     const posts = await prisma.post.findMany();
+<<<<<<< HEAD
     prisma.$disconnect();
     return users;
   } catch (e) {
+=======
+    return posts;
+  } catch (e) {
+    console.error('ERROR: ', e);
+    throw e;
+  } finally {
+>>>>>>> 573dcee (fix bugs)
     prisma.$disconnect();
   }
 }
@@ -118,7 +167,11 @@ async function findAllEnvs() {
 }
 
 /**
+<<<<<<< HEAD
  * Fake authentication 
+=======
+ * Fake authentication
+>>>>>>> 573dcee (fix bugs)
  * @returns A fake token
  */
 function signIn(name, password) {
@@ -135,4 +188,8 @@ export {
   findEnvById,
   findAllEnvs,
   signIn,
+<<<<<<< HEAD
+=======
+  createEnv,
+>>>>>>> 573dcee (fix bugs)
 };

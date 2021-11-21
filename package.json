@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start": "nodemon src/index.js"
+    "start": "nodemon src/index.js",
+    "prisma": "prisma"
   },
   "type": "module",
   "keywords": [
