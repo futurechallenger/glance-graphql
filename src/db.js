@@ -20,6 +20,8 @@ async function createUser({ name, email }) {
 }
 
 async function findUserById(userId) {
+  console.log('findUserById: ', userId);
+
   try {
     const users = await prisma.user.findUnique({
       where: { id: userId },
@@ -61,6 +63,29 @@ async function findUserByName(name) {
           },
         }
       : null;
+    const users = await prisma.user.findMany(condition);
+    prisma.$disconnect();
+    return users;
+  } catch (e) {
+    console.error('ERROR: ', e);
+    throw e;
+  } finally {
+    prisma.$disconnect();
+  }
+}
+
+async function batchFindUsers(Ids) {
+  console.log('batchFindUsers: ', Ids);
+  if (!Array.isArray(Ids) || Ids.length === 0) {
+    return [];
+  }
+
+  try {
+    const condition = {
+      where: {
+        id: { in: Ids },
+      },
+    };
     const users = await prisma.user.findMany(condition);
     prisma.$disconnect();
     return users;
@@ -191,5 +216,9 @@ export {
 <<<<<<< HEAD
 =======
   createEnv,
+<<<<<<< HEAD
 >>>>>>> 573dcee (fix bugs)
+=======
+  batchFindUsers,
+>>>>>>> 87997c5 (batch db requests)
 };

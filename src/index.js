@@ -4,8 +4,12 @@ import { graphqlHTTP } from 'express-graphql';
 import { schema } from './another_schema.js';
 import cors from 'cors';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import * as resolvers from './resolvers.js';
 =======
+=======
+import { buildDataloaders } from './dataloaders.js';
+>>>>>>> 87997c5 (batch db requests)
 // import * as resolvers from './resolvers.js';
 >>>>>>> 573dcee (fix bugs)
 
@@ -27,14 +31,17 @@ app.use(
      * have to provide the query. If it's true, you will see the graphic UI to test your query there
      */
     graphiql: true, // process.env.ENV === development
-    context: async () => {
-      const authorization = req.headers?.authorization;
-      if (!authorization) {
-        return;
-      }
+    context: {
+      auth: async () => {
+        const authorization = req.headers?.authorization;
+        if (!authorization) {
+          return;
+        }
 
-      const token = authorization.split(' ')[1];
-      return token;
+        const token = authorization.split(' ')[1];
+        return token;
+      },
+      dataloaders: buildDataloaders(),
     },
   })),
 );
