@@ -152,6 +152,8 @@ async function findPostById(postId) {
 }
 
 async function findAllPosts() {
+  console.log('>findAllPosts');
+
   try {
     const posts = await prisma.post.findMany();
 <<<<<<< HEAD
