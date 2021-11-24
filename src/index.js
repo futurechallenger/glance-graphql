@@ -3,16 +3,8 @@ import { graphqlHTTP } from 'express-graphql';
 // import { schema } from './schema.js';
 import { schema } from './another_schema.js';
 import cors from 'cors';
-<<<<<<< HEAD
-<<<<<<< HEAD
-import * as resolvers from './resolvers.js';
-=======
-=======
-import { buildDataloaders } from './dataloaders.js';
->>>>>>> 87997c5 (batch db requests)
 // import * as resolvers from './resolvers.js';
->>>>>>> 573dcee (fix bugs)
-
+import { buildDataloaders } from './dataloaders.js';
 const PORT = 9090;
 
 const app = express();
